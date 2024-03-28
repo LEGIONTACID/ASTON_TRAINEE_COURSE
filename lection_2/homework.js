@@ -1,59 +1,96 @@
-//Как исправить "одни пятёрки"?
+var resultOfClosureFunction = [];
+for (var i = 0; i < 5; i++) {
+  (function(i) {
+    resultOfClosureFunction[i] = function () {
+      console.log(i);
+  }})(i)
+}
+console.log('Result: Closure function:')
+for (let i = 0; i < 5; i++) {
+  resultOfClosureFunction[i]()
+}
 
-// var result = [];
-// for (var i = 0; i < 5; i++) {
-//     result[i] = function () {
-//         console.log(i);
-//     };
-// }
-// result[0](); //5
-// result[1](); //5
-// result[2](); //5
-// result[3](); //5
-// result[4](); //5
+/*
+Array resultOfClosureFunction заполняется функциями
+Используется функция замыкания, чтобы сохранить 
+значения переменной i для каждой итерации цикла
+*/
+var resultWithLet = [];
+for (let i = 0; i < 5; i++) {
+  resultWithLet[i] = function () {
+        console.log(i);
+    };
+}
+console.log('Result: with let:')
+for (let i = 0; i < 5; i++) {
+  resultWithLet[i]()
+}
+/*
+Создание блочной области видимости, каждая функция присвоенная 
+resultWithLet будет иметь отдельную копию let i, соответствующей
+конкретной операции цикла.
+*/
+function getGroup() {
+  let students = [];
+  let i = 0;
+  while (i < 10) {
+    (function(i) {
+      students[i] = function() {
+        console.log(i);
+      }
+    })(i);
+    i++;
+    }
 
-//////////////////////////////////////////////////
+    return students;
+}
 
-// function getGroup() {
-//     let students = [];
-//     let i = 0;
-//     while (i < 10) {
-//         students[i] = function() {
-//             console.log(i);
-//         }
-//         i++
-//     }
-//
-//     return students;
-// }
-//
-// let group = getGroup();
-//
-// group[0](); // 10 как исправить на 0
-// group[5](); // 10                  5
+let group = getGroup();
+console.log('Result: getGroup():')
+for(let i = 0; i < 10; i++) {
+  group[i]()
+}
+/*
+Array group заполняется функциями
+Используется функция замыкания, чтобы сохранить 
+значения переменной i для каждой итерации цикла
 
-//////////////////////////////////////////////////
-
-// Напишите функцию multiply, должна принимать произвольное количество аргументов и возвращать их произведение.
-
-// const result1 = multiply(2)(3)(4)();
-// console.log(result1); // Вывод: 24
-// const result2 = multiply(2)(3)(4)(5();
-// console.log(result2); // Вывод: 120
-
-// const result1 = multiply(2)(3)(4)();
-//
-// // Пример использования:
-// const result1 = multiply(2)(4)();
-// console.log(result1); // Вывод: 24
-//
-// const result2 = multiply(5)(2)(3)(6)();
-// console.log(result2); // Вывод: 30
-
-/////////////////////////
-// Написать функцию getUniqArray(arr), которая на вход принимает массив чисел и
-// возвращает массив уникальных чисел.
-//     Если аргумент arr состоит не из чисел, тогда функция должна выбросить ошибку.
-//     Текст ошибки: "В getUniqArray был передан невалидный параметр. Аргумент arr
-// должен быть массивом чисел".
-
+Предыдущее решение ссылалось на внешнюю переменную i,
+в следствии любой вызов ссылки на i приведет к последнему значению 
+переменной объявленной как let i
+*/
+function multiply(a) {
+  return function(b) {
+    if (typeof b !== 'undefined') {
+      return multiply(a * b);
+    }
+    return a;
+  }
+}
+console.log('Result: Multiply():')
+const resultOfMultiply = multiply(6)();
+console.log(resultOfMultiply);
+/*
+Замыкание в JavaScript, функция multiply возвращает
+внутренню функцию. Внутрення функция при отсутствии
+следующей функции в вызове возвращает выражение вычисленное.
+*/
+console.log('Result: getUniqArray(array):')
+const tempData = [1,2,3,24,61,2]
+function getUniqArray(array) {
+  array.forEach(elem => {
+    if (!(typeof elem === 'number' && isFinite(elem)) ) {
+      throw new Error(`В getUniqArray был передан невалидный параметр. 
+                       Аргумент arr должен быть массивом чисел`)
+    }
+  })
+  return Array.from(new Set(array));
+}
+const output = getUniqArray(tempData);
+console.log(output)
+/*
+Ключевая особеность функции вывода массива уникальных чисел в первичной строгой
+проверки на число.
+Затем вызывается метод класса Array и создает новый массив на основе переданного
+объекта "Множество"
+*/
