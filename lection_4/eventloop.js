@@ -76,7 +76,7 @@
 //     console.log('bar start');
 //     setTimeout(() => {
 //         console.log('bar end');
-//     }, 1000);
+//     }, 2000);
 // }
 //
 // function baz() {
@@ -89,9 +89,17 @@
 // function foo() {
 //     console.log('foo start');
 //
+//     function sleep(ms) {
+//         const start = Date.now();
+//
+//         while (Date.now() < start + ms) {
+//
+//         }
+//     }
+//
 //     function loop() {
 //         const start = new Date().getTime();
-//         for (let i = 0; i < Array(40000).length; i++) {}
+//         sleep(3000)
 //         const end = new Date().getTime();
 //         console.log(`SecondWay: ${end - start}ms`);
 //     }
